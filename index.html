@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="這家發跡新竹的廠商自「全球專業分工」年代崛起，現在卻成為「新冷戰」下的戰略陣地。">
+    <meta property="fb:app_id" content="">
+    <meta property="og:title" content="【地圖頁面】台積電擴廠史：全球化晶圓代工的昨日、今日與未來">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://theinitium.com/project/20210915-project-taiwan-tsmc-semiconductor-history">
+    <meta property="og:image" content="https://theinitium.com/project/20210915-project-taiwan-tsmc-semiconductor-history/img/thumb.jpg">
+    <meta property="og:image:alt" content="【地圖頁面】台積電擴廠史：全球化晶圓代工的昨日、今日與未來">
+    <meta property="og:site_name" content="【地圖頁面】台積電擴廠史：全球化晶圓代工的昨日、今日與未來">
+    <meta property="og:description" content="這家發跡新竹的廠商自「全球專業分工」年代崛起，現在卻成為「新冷戰」下的戰略陣地。">
+    <title>【地圖頁面】台積電擴廠史：全球化晶圓代工的昨日、今日與未來</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/app.min.css">
+    <script>
+      (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+      ga('create', 'UA-65642613-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <nav id="nav">
+        <div class="logo"><a href="/"></a></div>
+      </nav>
+      <main class="index" id="main">
+        <div id="loading" v-if="isLoading">
+          <div class="container text-center">
+            <figure><img class="img-fluid" src="img/vec-13.svg"></figure><span><i></i>Loading...</span>
+          </div>
+        </div>
+        <div id="map">
+          <div class="dashboard">
+            <div class="container">
+              <div class="row">
+                <div class="col-8 col-md-3">
+                  <div class="row">
+                    <div class="col-5 col-md-12">
+                      <div class="price">
+                        <h6>股價（台幣）</h6><span v-if="active.price">{{active.price}}</span><span v-else>--</span>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-12">
+                      <div class="capex">
+                        <h6>資本支出 <i class="d-none d-md-inline">CapEx</i>（億美元）</h6><span v-if="active.capex">{{active.capex}}</span><span v-else>--</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4 col-md-3">
+                  <div class="tech">
+                    <h6>製程技術進展</h6><span v-if="active.tech">{{active.tech}}</span><span v-else>--</span>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <hr class="d-md-none">
+                  <div class="year"><span>{{active.year}}</span><span v-if="isPeriod1 &amp;&amp; isMobile">-草創期</span><span v-if="isPeriod2 &amp;&amp; isMobile">-茁壯期</span><span v-if="isPeriod3 &amp;&amp; isMobile">-成長擴張期</span><span v-if="isPeriod4 &amp;&amp; isMobile">-西進中國</span><span v-if="isPeriod5 &amp;&amp; isMobile">-量產加速期</span><span v-if="isPeriod6 &amp;&amp; isMobile">-美中貿易戰</span><span v-if="isPeriod7 &amp;&amp; isMobile">-全球擴張期</span></div>
+                  <div class="text" v-html="active.text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="period d-none d-md-block"><span class="flex-1" :class="{active: isPeriod1}">草創期</span><span class="flex-3" :class="{active: isPeriod2}">茁壯期</span><span class="flex-3" :class="{active: isPeriod3}">成長擴張期</span><span class="flex-2" :class="{active: isPeriod4}">西進中國</span><span class="flex-2" :class="{active: isPeriod5}">量產加速期</span><span class="flex-2" :class="{active: isPeriod6}">美中貿易戰</span><span class="flex-2" :class="{active: isPeriod7}">全球擴張期</span></div>
+            <div class="years"><span v-for="(data, idx) in datas" :key="idx" :class="[{'active': data.year === active.year}, 'y'+data.year]">{{data.year}}</span></div>
+          </div>
+          <div class="mask"></div>
+        </div>
+        <div class="intro stage">
+          <div class="scene">
+            <div class="container">
+              <div class="card card-1-1 yellow">
+                <div class="inner">
+                  <div class="title"><span>地圖頁面</span>
+                    <h1>台積電擴廠史<br><b>全球化晶圓代工的昨日、今日與未來</b></h1>
+                  </div>
+                  <div class="text">
+                    <p>2021年9月，台積電可能在台灣高雄設7奈米廠的消息，廣受矚目。</p>
+                    <p>畢竟，近兩年來，全球晶片需求高升，台積電成了全球兵家必爭之地；但台灣又因台海戰爭的陰影升高，被而《經濟學人》稱為「世界上最危險的地方」。美、日、德、中都在爭取晶片這個重要的戰略物資，希望留在自己國家境內設廠，確保它不受到疫情、戰爭的影響。</p>
+                    <p>換句話說，在這「逆全球化」的年代，從「全球化時代」走來的台積電，未來設廠何處、在哪裡製造這「二十一世紀的石油」，動見觀瞻。</p>
+                  </div>
+                  <div class="tips text-center"><span class="icon"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene">
+            <div class="container">
+              <div class="card card-1-2 yellow">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-md-9">
+                    <p>1987年，柏林圍牆倒塌的前三年，台積電在新竹起家；其採取的晶圓代工製造路線，奠基在舊冷戰瓦解、全球化浪潮來臨的年代，以客戶、股東與市場利潤為導向，以台灣為生產基地，向全球客戶供貨；但隨著中美對抗的世界大局逐漸成形，養育台積電的土壤，也起了根本性的變化。</p>
+                    <p>在這關鍵時刻，當我們回顧台積電全球化、擴廠的旅程，將更能明白它今日面臨的挑戰，這些挑戰不只屬於一家企業，也牽動世界晶片／芯片產業的未來，甚至往往是地緣政治角力的先兆。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene">
+            <div class="container">
+              <div class="card card-2 yellow">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-lg-7">
+                    <h2 class="text-center">在回顧台積電的全球化旅程之前首先回頭認識：何謂「晶片」？</h2>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <div class="phone">
+                    <div class="box">
+                      <figure class="case d-none d-md-block"><img class="img-fluid" src="img/phone.svg"></figure>
+                      <figure class="board"><img class="img-fluid" src="img/board.svg"></figure>
+                    </div>
+                    <div class="item chip-1">
+                      <figure></figure>
+                      <div class="desc">
+                        <h6><span class="d-md-none">1</span>積體電路</h6>
+                        <p>將成千上億的電晶體與其他電子元件，全塞在一長寬約半公分的晶片上，這晶片即是積體電路。</p>
+                      </div>
+                    </div>
+                    <hr class="d-md-none">
+                    <div class="item chip-2">
+                      <figure></figure>
+                      <div class="desc">
+                        <h6><span class="d-md-none">2</span>電晶體</h6>
+                        <p>半導體的一個元件，就像水龍頭可以控制水流一樣，電晶體是電流的控制器。</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene">
+            <div class="container">
+              <div class="card card-3 yellow">
+                <h2 class="text-center">半導體晶片如何製作？</h2>
+                <div class="row justify-content-center">
+                  <div class="col-10 col-md-4">
+                    <div class="item item-1 text-center">
+                      <figure><img class="img-fluid" src="img/vec-1.svg"></figure>
+                      <h3>IC 設計</h3>
+                      <div class="desc">
+                        <p>工程師會先畫出IC電路設計圖，規劃晶片功能。</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-10 col-md-4">
+                    <div class="item item-2 text-center" :class="{active: isMobile}">
+                      <figure><img class="img-fluid" src="img/vec-2.svg"></figure>
+                      <h3>晶圓製造</h3>
+                      <div class="desc">
+                        <p>上游的矽晶圓廠將矽純化、拉出「矽晶柱」，並像切火腿一般將晶柱切成薄片，形成「晶圓」（Wafer）。接著，經過台積電這類製造廠的一連串複雜程序，電路設計圖透過光罩被轉印在晶圓上。</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-10 col-md-4">
+                    <div class="item item-3 text-center">
+                      <figure><img class="img-fluid" src="img/vec-3.svg"></figure>
+                      <h3>封裝測試</h3>
+                      <div class="desc">
+                        <p>接著，晶圓被送到封裝廠切割成晶片，並做最後測試。</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene">
+            <div class="container">
+              <div class="card card-4 yellow">
+                <h2>「8吋晶圓」、「5奈米製程」這些數字代表什麼？</h2>
+                <div class="row">
+                  <div class="col-12 col-md-7">
+                    <figure class="wafer"><img class="img-fluid" src="img/vec-4.svg"></figure>
+                    <div class="text">
+                      <p>台灣媒體上常見的「8吋晶圓」、「12吋晶圓」，指的是晶圓的直徑。<b>晶圓越大、可生產的晶片量就越多，可降低每單位晶片成本，也可隨設備技術演進滿足更先進製程</b>。</p>
+                      <p>當前，<b>台積電最先進製程的晶片都是在12吋晶圓廠生產，8吋晶圓廠以生產成熟製程晶片為主。</b>過去一兩年，全球市場對成熟製程需求超過預期，用來生產觸控控制晶片、電源管理晶片的8吋晶圓廠產能供不應求。</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-5">
+                    <figure class="nm"><img class="img-fluid" src="img/vec-5.svg"></figure>
+                    <div class="text">
+                      <p>1奈米是1公分的一千萬分之一，「5奈米製程」指在晶片中，最小可以做到接近5奈米的尺寸。</p>
+                      <p>各家廠商之所以追求更細小奈米製程，是為了<b>在更小的晶片中塞入更多的電晶體，讓晶片不會因技術提升而變得更大，滿足現代對電子用品輕薄、省電、高效能的需求</b>。</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene">
+            <div class="container">
+              <div class="card card-5 yellow">
+                <h2>台積電的「專業代工」模式</h2>
+                <p>台積電在世界半導體產業史上，採取的是相當創新的<strong>「專業晶圓代工」</strong>模式。張忠謀後來曾回憶，世界上多數的半導體公司都採取「垂直整合」（IDM) 模式，也就是將半導體產業當中的IC設計、晶圓製造、IC行銷，三者集結在一個公司內完成。而台積電的創新之處，<strong>便是僅專注做「晶圓製造」</strong>一項，靠著永遠不與客戶競爭的承諾，讓它贏取了大量的半導體公司客戶。</p>
+                <div class="row align-items-center justify-content-center">
+                  <div class="col-8 col-md-4">
+                    <figure class="wafer"><img class="img-fluid" src="img/people-1.svg"></figure>
+                    <hr class="d-md-none">
+                  </div>
+                  <div class="col-md-8">
+                    <p>張忠謀為何採取這樣的策略？</p>
+                    <p>他說，<strong>1980年代的台灣，沒有設計、行銷的能力，不可能做垂直整合公司，晶圓製造技術雖然落後，「但是在良率方面倒是滿好的，可以跟別的世界級公司的製造部門競爭」</strong>，也因此張忠謀提出的戰略，可說是為了當年的台灣「量身訂做」。</p>
+                    <p>在全球化的年代，台積電開始了它不斷擴張的旅程。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="events stage">
+          <div class="scene y1987"></div>
+          <div class="scene y1990"></div>
+          <div class="scene y1994"></div>
+          <div class="scene y1995"></div>
+          <div class="pedia pedia-1">
+            <div class="container">
+              <div class="card blue">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-lg-9">
+                    <p>台積電於 1994 年股票上市之後，開始積極擴張，進入關鍵的轉捩階段，除了在台灣、海外積極擴張之外，亦開始規劃超大型廠房<strong>「GIGAFAB」（超大晶圓廠）</strong>，奠定此後台積電在台灣興建廠房的新模式。</p>
+                    <div class="row align-items-center justify-content-center">
+                      <div class="col-12 col-md-1"></div>
+                      <div class="col-8 col-md-4">
+                        <figure><img class="img-fluid" src="img/vec-7.svg"></figure>
+                      </div>
+                      <div class="col-12 col-md-1">
+                        <hr class="d-md-none">
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <p>除了創新的廠房模式之外，台積電在台灣境內，則先後併購了「德碁」和「世大」兩間公司位於竹科的廠房（分別編為台積電的 7 廠和 8 廠），並在台灣的第二個科學園區──南部科學園區設立晶圓廠；</p>
+                        <p>至於海外，台積電則在美國華盛頓州轉投資 Wafertech（11廠），並與飛利浦合資於新加坡成立 SSMC。</p>
+                        <p style="line-height: 15px"><small>註：GIGAFAB 通常由幾座廠房組合而成，規模比一般晶圓廠大很多，由先進的「集中式晶圓廠製造管理系統超級製造平台」協調運作；左圖即台積電的第一座GIGAFAB——新竹的12廠</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene y1998"></div>
+          <div class="scene y2000"></div>
+          <div class="scene y2000"></div>
+          <div class="scene y2000"></div>
+          <div class="scene y2000"></div>
+          <div class="scene y2001"></div>
+          <div class="pedia pedia-2">
+            <div class="container">
+              <div class="card blue">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-lg-9">
+                    <p>不過台積電在海外設廠的計畫，也並非全無爭議；其中卡關最久的，當屬位於上海松江的八寸晶圓廠（10廠）。</p>
+                    <p>
+                       台積電開始積極擴張時，正好是<b>李登輝執政時期，也是台商大舉赴陸、台灣社會激烈討論西進利弊的時間點</b>。</p>
+                    <hr>
+                    <div class="row align-items-center justify-content-center">
+                      <div class="col-8 col-md-4">
+                        <figure class="y1996"></figure>
+                      </div>
+                      <div class="col-12 col-md-8">
+                        <p class="m-0"><strong>1996年</strong></p>
+                        <p>李登輝提出「戒急用忍」概念，決定暫緩投資金額高於 5000 萬美元、屬於高科技產業，或和基礎建設有關的對陸投資案。</p>
+                        <p>導致台積電在美國的11廠、在新加坡的SSMC都落成量產了，在上海松江的10廠都仍然沒有著落。</p>
+                      </div>
+                    </div>
+                    <hr>
+                    <p><b>台灣實現首次政黨輪替、陳水扁上台之後，情況才有了變化。</b></p>
+                    <div class="row align-items-center justify-content-center">
+                      <div class="col-8 col-md-4">
+                        <figure class="y2000"></figure>
+                      </div>
+                      <div class="col-12 col-md-8">
+                        <p class="m-0"><strong>2002年</strong></p>
+                        <p>台灣經濟部發布<b>《在大陸地區投資晶圓鑄造廠審查及監督作業要點》</b>，為台商赴陸設置半導體廠提供了審查依據。</p>
+                        <p>台積電在上海松江的設廠計畫，亦在隔年 2 月終於獲台灣經濟部同意。</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene y2003"></div>
+          <div class="scene y2004"></div>
+          <div class="scene y2004"></div>
+          <div class="pedia pedia-3">
+            <div class="container">
+              <div class="card blue">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-lg-9">
+                    <p>2010年，世界剛剛經歷金融海嘯，台積電卻大膽地將資本支出，從前一年的26.71億美元，翻倍為59.36億美元。</p>
+                    <figure class="text-center"><img class="img-fluid d-none d-lg-inline-block" src="img/vec-11.svg"><img class="img-fluid d-inline-block d-lg-none" src="img/vec-11m.svg"></figure>
+                    <hr>
+                    <p>在這個客戶需求量非常大的製程，台積電拉開和其他競爭者（三星、GlobalFoundries、聯電）的距離。張忠謀在2012年稱台積電的28奈米是「徹底的成功」，拿下接近100%的晶圓代工市佔率。</p>
+                    <p>順著28奈米的成功，台積電搭上智慧型手機的浪潮。</p>
+                    <p>2014年，台積電以20奈米製程技術首度拿下蘋果iPhone 6的處理器代工訂單。在下一支蘋果iPhone 6s，台積電和競爭者三星雖同時拿下A9處理器訂單，台積電卻用其16奈米製程技術完勝三星的14奈米。</p>
+                    <p>自此之後，從iPhone 7 到今天的iPhone 12，蘋果的A系列處理器全找台積電代工，蘋果成為近幾年台積電的最大成長動能之一。</p>
+                    <hr>
+                  </div>
+                </div>
+                <div class="phones">
+                  <div class="phone nokia">
+                    <figure><img class="img-fluid" src="img/phone-1.svg">
+                      <figcaption><span class="model">NOKIA 3310 (2000)</span><span class="brand">德州儀器 (132奈米)</span></figcaption>
+                    </figure>
+                  </div>
+                  <div class="phone">
+                    <figure><img class="img-fluid" src="img/phone-2.svg">
+                      <figcaption><span class="model">NOKIA N70 (2005)</span><span class="brand">德州儀器 (90奈米)</span></figcaption>
+                    </figure>
+                  </div>
+                  <div class="phone">
+                    <figure><img class="img-fluid" src="img/phone-3.svg">
+                      <figcaption><span class="model">iPhone 3GS (2009)</span><span class="brand">三星 (65奈米)</span><span class="tips">從首代到iPhone 5，蘋果用的是三星代工的處理器</span></figcaption>
+                    </figure>
+                  </div>
+                  <div class="phone">
+                    <figure><img class="img-fluid" src="img/phone-4.svg">
+                      <figcaption><span class="model">iPhone 6s (2015)</span><span class="brand">使用三星 (14奈米)和台積電 (16奈米)</span></figcaption>
+                    </figure>
+                  </div>
+                  <div class="phone">
+                    <figure><img class="img-fluid" src="img/phone-5.svg">
+                      <figcaption><span class="model">iPhone 7 (2016)</span><span class="brand">台積電 (16奈米)</span><span class="tips">從7開始至今，蘋果處理器皆找台積電代工</span></figcaption>
+                    </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene y2011"></div>
+          <div class="scene y2014"></div>
+          <div class="scene y2018"></div>
+          <div class="scene y2019"></div>
+          <div class="pedia pedia-5">
+            <div class="container">
+              <div class="card blue">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-lg-8">
+                    <p>2018年第二季，台積電的7奈米晶片量產，在7奈米的這一役，台積電領先了對手三星。</p>
+                    <div class="row align-items-center">
+                      <div class="col-6 col-md-5">
+                        <figure><img class="img-fluid" src="img/vec-12.svg"></figure>
+                      </div>
+                      <div class="col-6 col-md-7">
+                        <p>2018年10月，台積電趁勝追擊加大資本支出，加強對7奈米和5奈米的投資，台積電再一次讓世界看到屬於它的「黃金年代」。</p>
+                      </div>
+                    </div>
+                    <hr>
+                    <p><b>擴大資本支出之所以關鍵，因為各國現在正在比拚的，正是一場資本競賽。</b></p>
+                    <p>要想在先進製程的世界裡競爭，從研發成本到設備支出，動輒數百億美元的投資，全世界只剩下資本雄厚的台灣的台積電、南韓的三星和美國的英特爾玩得起。</p>
+                    <p>舉例來說，當這三家公司要往7奈米以下更先進的製程技術發展，就必須運用到荷蘭設備商艾斯摩爾（ASML）的EUV（極紫外光）機台，而這每台高達1億美元以上的機器，也是台積電資本支出超高的因素之一。</p>
+                    <p>為了因應市場需求、保持技術領先，2021年4月，台積電宣告將在未來三年投入1000億美元的資本支出。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene y2020"></div>
+          <div class="scene y2020"></div>
+          <div class="scene y2021"></div>
+          <div class="scene y2021"></div>
+        </div>
+        <div class="final stage">
+          <div class="container">
+            <div class="building">
+              <div class="row justify-content-center">
+                <div class="col-9 col-lg-5">
+                  <figure class="text-center"><img class="img-fluid" src="img/vec-13.svg">
+                    <figcaption class="serif">未來雖不可知，但當我們回顧台積電全球化的旅程，或許也更能明白它今日面臨的挑戰，這些挑戰不只屬於一家企業，亦牽動世界晶片／芯片產業的未來。</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-8">
+                <p>台積電起初的崛起，可以說和「全球化」脫不了關係──正是資本、零組件的跨國流動，以及全球產業鏈的分工，讓台積電得以將台灣當作晶圓的生產基地，銷售各國。然而儘管扮演重要角色，台積電過往卻經常被視為「代工廠」，不只蟄伏在世界舞台的幕後，就連希望「發展品牌」、「追求產業升級」的台灣人，有時也未必看得見台積電「專業代工」的價值。</p>
+                <p>有趣的是，讓台積電開始被世界看見的原因，卻是另一股看似完全相反的動力：自從2018年美中貿易戰愈演愈烈，以及美國制裁華為、重組供應鏈之後，世界貿易便壁壘再起，頗有「新冷戰」的態勢；而 COVID-19 疫情造成的晶片短缺，則進一步加深了台積電、以及整個半導體產業的重要性──台積電近兩年大幅竄升的股價和市值，都反映了這些動態。</p>
+              </div>
+            </div>
+            <div class="people people-1">
+              <div class="row align-items-end justify-content-center">
+                <div class="col-8 col-md-4 col-lg-3">
+                  <figure><img class="img-fluid" src="img/people-4.svg"></figure>
+                </div>
+                <div class="col-12 col-md-8 col-lg-7">
+                  <blockquote>
+                    <h6>晶片呢，就像我手裡的這個一樣，這些晶片、這些晶圓呢，就是電池，就是寬頻網路，那都是基礎設施。晶片，就是基礎設施。</h6>
+                    <div class="text-right"><span class="serif">美國總統拜登（Biden），2021</span></div>
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+            <hr class="d-md-none">
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-8">
+                <p>隨著拜登對美國追趕基礎設施、發展半導體的呼籲，各個大國，也開始將半導體視為「戰略產業」；除了在美國鳳凰城的新廠已經開工之外，台積電也傳出可能會在日本、德國落地設廠：在這波「逆全球化」的浪潮中，台積電的設廠地點，似乎也不得不變得更多元。</p>
+                <p>然而台積電前董事長張忠謀，和現任董事長劉德音，也多次強調，半導體的「在地化」生產不只不切實際、會提昇成本，也可能拖累技術進步的速度。</p>
+              </div>
+            </div>
+            <div class="people people-2">
+              <div class="row align-items-end justify-content-center">
+                <div class="col-8 col-md-4 col-lg-3 order-md-2">
+                  <figure><img class="img-fluid" src="img/people-5.svg"></figure>
+                </div>
+                <div class="col-12 col-md-8 col-lg-7 order-md-1">
+                  <blockquote>
+                    <h6>半導體製造在地化會產生，但我覺得是一個相當局部性的發展，因為全世界的半導體供應鏈是緊密結合，是讓我們的消費者得到最大的利益，比如說電話等等，這個在地化我覺得不太可能。</h6>
+                    <div class="text-left"><span class="serif">台積電董事長劉德音股東會談話，2021</span></div>
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+            <div class="people people-3">
+              <div class="row align-items-end justify-content-center">
+                <div class="col-8 col-md-4 col-lg-3">
+                  <figure><img class="img-fluid" src="img/people-1.svg"></figure>
+                </div>
+                <div class="col-12 col-md-8 col-lg-7">
+                  <blockquote>
+                    <h6>試圖讓時光倒流，是相當不切實際的，如果嘗試讓時光倒流，不僅成本將會提升，技術的進步也可能會放緩。</h6>
+                    <div class="text-right"><span class="serif">張忠謀 APEC 談話，2021</span></div>
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+            <hr class="d-md-none">
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-8">
+                <p>值得注意的是，雖然台積電過去早有在海外發展的案例，往其主要客戶所在的中、美兩國設廠，但其最先進的製程和研發基地，則總是會留在台灣。</p>
+                <p>目前看來，這個策略並沒有太大變化：雖然海外設廠聲音不斷，但台積電最先進的2奈米製程，依然將會落戶台灣新竹，回到台積電發跡的故鄉。</p>
+                <p>三十多年前，台積電因為「全球化」而崛起，現在又因為「逆全球化」趨勢、與全球對晶片的需求，而成為兵家必爭的對象。台積電將如何在地緣政治的洶湧暗潮中前行？或許正如許多專家的建議，台積電可能更寧願選擇低調行事，但作為一家被稱為台灣「護國神山」的企業，台積電恐怕將不再只是投資人與行業專家關注的標的，而是國際間眾人矚目與爭搶的焦點。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="read stage">
+          <div class="container">
+            <div class="card blue">
+              <div class="support">
+                <div class="text">
+                  <h6>加入端傳媒，支持好新聞</h6><span>用你選擇的媒體，決定你看見的世界</span>
+                </div>
+                <div class="button"><a href="https://theinitium.com/subscription/offers/?&amp;utm_source=initium&amp;utm_medium=initium&amp;utm_campaign=initium_project" target="_blank">付費支持</a></div>
+              </div>
+              <h2 class="text-center">延伸閱讀</h2>
+              <div class="row justify-content-center">
+                <div class="col-6 col-md-4">
+                  <div class="article"><a href="https://theinitium.com/article/20210630-taiwan-white-house-semiconductor/" target="_blank">
+                      <figure><img class="img-fluid" src="img/read-1.jpg"></figure>
+                      <h3>解析白宮半導體供應鏈關鍵報告：拜登在新一輪晶片戰爭中劍指何方？</h3></a></div>
+                </div>
+                <div class="col-6 col-md-4">
+                  <div class="article"><a href="https://theinitium.com/article/20210914-taiwan-umc-jackson-hu/" target="_blank">
+                      <figure><img class="img-fluid" src="img/read-2.jpg"></figure>
+                      <h3>聯電前董事長胡國強專訪：中美競爭下，半導體業的未來將如何？</h3></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer id="footer">
+        <div class="container">
+          <div class="credit">
+            <h6 class="text-center">製作團隊</h6>
+            <div class="d-flex justify-content-center">
+              <table>
+                <tr>
+                  <th>文字</th>
+                  <td>李玟儀、李易安、何欣潔、林庭葦</td>
+                </tr>
+                <tr>
+                  <th>設計</th>
+                  <td>郭瑾燁</td>
+                </tr>
+                <tr>
+                  <th>插畫</th>
+                  <td>Alice Tse</td>
+                </tr>
+                <tr>
+                  <th>工程</th>
+                  <td>Elk Leung</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="copyright text-center"><span>©2021 Initium Media. All Rights Reserved.</span></div>
+        </div>
+      </footer>
+    </div>
+    <script src="js/app.min.js"></script>
+  </body>
+</html>
